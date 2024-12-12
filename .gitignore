@@ -1,0 +1,53 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven
+/target/
+*.jar
+
+# Spring Boot
+/target/classes/
+/target/test-classes/
+
+# Logs
+logs/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Additional
+*.log
+*.war
+*.log.gz
+
+# Go build directories
+/bin/
+/pkg/
+*.exe
+
+# Go modules
+/go.mod
+/go.sum
+
+# IDEs
+*.swp
+*.swo
+*.bak
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Debug files
+*.out
+*.trace
+*.test
+*.cache
+*.log
+
+# Vendor directory
+/vendor/
