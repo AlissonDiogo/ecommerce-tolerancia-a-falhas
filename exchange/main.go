@@ -15,17 +15,12 @@ func main() {
 	r := gin.Default()
 	var value float64
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-
+	//endpoint exchange
+	r.GET("/exchange", func(ctx *gin.Context) {
 		if utils.CheckGenerateOfFail() {
 			utils.StopProgram()
 		}
-	})
 
-	r.GET("/exchange", func(ctx *gin.Context) {
 		if value != 0.0 {
 			ctx.JSON(http.StatusOK, gin.H{
 				"value": value,

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 )
@@ -12,7 +13,8 @@ func CheckGenerateOfFail() bool {
 
 // Usado para parar o programa em caso de falha
 func StopProgram() {
-	os.Exit(1)
+	fmt.Println("Parando programa devido a uma falha.")
+	os.Exit(3)
 }
 
 // Usado para gerar uma cotação fictícia do dolar entre 5,7 e 6,1
