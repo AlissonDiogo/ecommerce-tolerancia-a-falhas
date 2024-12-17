@@ -1,8 +1,8 @@
 services:
   spring-app:
-    image: store-app
+    image: ecommerce-app
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8083:8083"
+      - "8082:8082"
