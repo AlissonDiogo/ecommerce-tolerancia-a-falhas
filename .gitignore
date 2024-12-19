@@ -9,6 +9,8 @@
 # Spring Boot
 /target/classes/
 /target/test-classes/
+*/store/target
+*/ecommerce/target
 
 # Logs
 logs/
