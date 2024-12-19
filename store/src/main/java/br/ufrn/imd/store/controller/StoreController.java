@@ -1,16 +1,16 @@
 package br.ufrn.imd.store.controller;
 
 import br.ufrn.imd.store.dto.ProductResponseDto;
+import br.ufrn.imd.store.dto.SellRequestDto;
 import br.ufrn.imd.store.dto.SellResponseDto;
 import br.ufrn.imd.store.failure.HandleFailure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/store")
@@ -33,8 +33,10 @@ public class StoreController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @GetMapping("/sell")
-    public ResponseEntity<SellResponseDto> checkSellByProduct(@NonNull @RequestParam("productId") String productId) {
+    @PostMapping("/sell")
+    public ResponseEntity<SellResponseDto> checkSellByProduct(@NonNull @RequestBody SellRequestDto sellRequestDto) {
+        System.out.println("Processando venda do produto de id: "+sellRequestDto.productId());
+
         if(handleFailure.checkFailureActivation("sell")) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -44,7 +46,7 @@ public class StoreController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        SellResponseDto sell = new SellResponseDto("sell-".concat(productId));
+        SellResponseDto sell = new SellResponseDto(UUID.randomUUID());
         return new ResponseEntity<>(sell, HttpStatus.OK);
     }
 
