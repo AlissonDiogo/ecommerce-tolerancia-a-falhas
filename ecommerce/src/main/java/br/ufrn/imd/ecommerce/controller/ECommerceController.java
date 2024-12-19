@@ -1,6 +1,7 @@
 package br.ufrn.imd.ecommerce.controller;
 
 import br.ufrn.imd.ecommerce.dto.BuyRequestDto;
+import br.ufrn.imd.ecommerce.dto.BuyResponseDto;
 import br.ufrn.imd.ecommerce.service.EcommerceProcessor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,8 +12,8 @@ public class ECommerceController {
     @PostMapping("/buy")
     public String buy(@RequestBody BuyRequestDto buyRequestDto) {
         EcommerceProcessor processor = new EcommerceProcessor();
-        processor.processBuy(buyRequestDto);
+        BuyResponseDto buyResponseDto = processor.processBuy(buyRequestDto);
 
-        return "teste";
+        return buyResponseDto.toString();
     }
 }
