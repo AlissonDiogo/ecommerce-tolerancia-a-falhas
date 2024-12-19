@@ -1,53 +1,56 @@
 package br.ufrn.imd.ecommerce.service;
 
 import br.ufrn.imd.ecommerce.dto.*;
-import br.ufrn.imd.ecommerce.fails.Fail;
-import br.ufrn.imd.ecommerce.service.exchange.ExchangeService;
-import br.ufrn.imd.ecommerce.service.exchange.ExchangeServiceImpl;
+import br.ufrn.imd.ecommerce.utils.fails.Fail;
+import br.ufrn.imd.ecommerce.service.exchange.ExchangeImpl;
 import br.ufrn.imd.ecommerce.service.fidelity.FidelityService;
 import br.ufrn.imd.ecommerce.service.fidelity.FidelityServiceImpl;
 import br.ufrn.imd.ecommerce.service.store.StoreService;
 import br.ufrn.imd.ecommerce.service.store.StoreServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
-import com.fasterxml.jackson.databind.node.DoubleNode;
+import java.util.UUID;
 
 public class EcommerceProcessor implements Processor {
 
-    private StoreService storeService;
-    private ExchangeService exchangeService;
-    private FidelityService fidelityService;
+    private final Logger logger = LoggerFactory.getLogger(EcommerceProcessor.class);
+
+    private final StoreService storeService;
+    private final ExchangeImpl exchangeService;
+    private final FidelityService fidelityService;
 
     public EcommerceProcessor() {
         this.storeService = new StoreServiceImpl("http://192.168.1.212:8082");
-        this.exchangeService = new ExchangeServiceImpl("http://192.168.1.212:8083");
+        this.exchangeService = new ExchangeImpl("http://192.168.1.212:8083");
         this.fidelityService = new FidelityServiceImpl("http://192.168.1.212:8084");
     }
 
     @Override
     public BuyResponseDto processBuy(BuyRequestDto requestDto) {
-
         // REQUEST 01
         ProductResponseDto productResponseDto = this.storeService.checkProductById(requestDto.productId());
         System.out.println(productResponseDto.productId());
 
         // REQUEST 02
-        Double exchangeValue = ExchangeServiceImpl.value;
         try {
             ExchangeResponseDto exchangeResponseDto = this.exchangeService.consultExchange();
-            ExchangeServiceImpl.value = exchangeResponseDto.value();
-            exchangeValue = exchangeResponseDto.value();
+            this.exchangeService.updateExchange(exchangeResponseDto.value());
         } catch (Fail f) {
-            System.out.println("Falha do tipo: " + f.getFailType()
-                    + " no microserviço de exchange. Será usado o valor obtido na última consulta.");
+            logger.error("[EXCHANGE] {} Será usado o valor obtido na última consulta.", f.getMessage());
         }
-        System.out.println(exchangeValue);
+        logger.info("O valor do câmbio é R$ {}", exchangeService.getLastExchangeValue());
 
         // REQUEST 03
+        UUID transactionId = this.storeService.sellProduct(new SellRequestDto(requestDto.productId()));
+        System.out.println(transactionId);
+
+        // REQUEST 04
         FidelityRequestDto fidelityRequestDto = new FidelityRequestDto(requestDto.userId(), 30d);
         int statusCode = this.fidelityService.bonus(fidelityRequestDto);
         System.out.println(statusCode);
 
-        return new BuyResponseDto(HttpStatus.CREATED, 10);
+        return new BuyResponseDto(HttpStatus.CREATED, transactionId);
     }
 }
