@@ -25,11 +25,11 @@ go run main.go
 ```
 3. Caso necessite iniciar a API em outra porta:
 ```shell
-PORT=8081 go run main.go
+PORT=8083 go run main.go
 ```
 4. Caso queira o valor atual(e não fictício) do dolar insira a variavel de ambiente "EXCHANGE_KEY" do [ExchangeRate-API](app.exchangerate-api.com)
 ```shell
-PORT=8081 EXCHANGE_KEY="your_api_key" go run main.go
+PORT=8083 EXCHANGE_KEY="your_api_key" go run main.go
 ```
 
 ### Pré-requisitos (com docker) <hr/>
@@ -55,7 +55,7 @@ docker build -t exchange-api:latest .
 ```
 3. Crie o serviço com 2 replicas a partir da imagem criada
 ```shell
-docker service create --name exchange-api --replicas 2 --restart-delay 10s -p 8081:8081 -e PORT=8081 exchange-api:latest
+docker service create --name exchange-api --replicas 2 --restart-delay 10s -p 8083:8083 -e PORT=8083 exchange-api:latest
 ```
 Altere os parâmetros de "replicas", "restart-delay" e portas, de acordo com a necessidade.
 4. Para remover o serviço:

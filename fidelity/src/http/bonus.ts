@@ -11,7 +11,7 @@ export async function bonus(app: FastifyInstance, state: IStateFailure) {
   app.post<{ Querystring: IQuerystring }>('/bonus', async (request, reply) => {
     await activateFailure(state)
 
-    const { idUser, bonus } = request.query
+    const { idUser, bonus } = request.body
 
     if (!idUser || !bonus) {
       return reply.status(400).send()

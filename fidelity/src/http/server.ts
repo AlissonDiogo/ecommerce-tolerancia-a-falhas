@@ -8,6 +8,6 @@ const state = getState()
 
 app.register(() => bonus(app, state))
 
-app.listen({ port: 8082, host: '0.0.0.0' }).then(() => {
+app.listen({ port: 8084, host: '0.0.0.0' }).then(() => {
   console.log('Fidelity server is running!')
 })

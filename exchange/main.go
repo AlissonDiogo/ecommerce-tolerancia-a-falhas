@@ -39,7 +39,7 @@ func main() {
 		}
 	}
 
-	r.Run()
+	r.Run(":8083")
 }
 
 // Faz a requisição à API de cotação do dólar e retorna o valor de câmbio

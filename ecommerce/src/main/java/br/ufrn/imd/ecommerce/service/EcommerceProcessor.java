@@ -16,9 +16,9 @@ public class EcommerceProcessor implements Processor {
     private FidelityService fidelityService;
 
     public EcommerceProcessor() {
-        this.storeService = new StoreServiceImpl("http://192.168.1.97:8083");
-        this.exchangeService = new ExchangeServiceImpl("http://192.168.1.97:8081");
-        this.fidelityService = new FidelityServiceImpl("http://192.168.1.97:8085");
+        this.storeService = new StoreServiceImpl("http://192.168.1.212:8082");
+        this.exchangeService = new ExchangeServiceImpl("http://192.168.1.212:8083");
+        this.fidelityService = new FidelityServiceImpl("http://192.168.1.212:8084");
     }
 
     @Override
@@ -34,8 +34,8 @@ public class EcommerceProcessor implements Processor {
 
         // REQUEST 03
         FidelityRequestDto fidelityRequestDto = new FidelityRequestDto(requestDto.userId(), 30d);
-        this.fidelityService.bonus(fidelityRequestDto);
-
+        int statusCode = this.fidelityService.bonus(fidelityRequestDto);
+        System.out.println(statusCode);
 
 
         return new BuyResponseDto(HttpStatus.CREATED, 10);

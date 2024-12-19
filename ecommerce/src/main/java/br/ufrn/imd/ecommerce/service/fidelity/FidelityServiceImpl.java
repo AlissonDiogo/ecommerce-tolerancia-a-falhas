@@ -2,9 +2,9 @@ package br.ufrn.imd.ecommerce.service.fidelity;
 
 import br.ufrn.imd.ecommerce.client.WebClient;
 import br.ufrn.imd.ecommerce.dto.FidelityRequestDto;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.io.IOException;
+import java.net.http.HttpResponse;
 
 public class FidelityServiceImpl implements FidelityService {
 
@@ -15,9 +15,10 @@ public class FidelityServiceImpl implements FidelityService {
     }
 
     @Override
-    public HttpResponseStatus bonus(FidelityRequestDto fidelity) {
+    public int bonus(FidelityRequestDto fidelity) {
         try{
-            return (HttpResponseStatus) webClient.post("/bonus", fidelity);
+            HttpResponse<String> response =  webClient.post("/bonus", fidelity);
+            return response.statusCode();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Erro no processamento do bonus: " + e.getMessage());
         }

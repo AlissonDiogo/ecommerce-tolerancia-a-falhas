@@ -23,7 +23,7 @@ public class WebClient {
         this.address = address;
     }
 
-    public Object post(String endpoint, Object body) throws IOException, InterruptedException {
+    public HttpResponse<String> post(String endpoint, Object body) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(address.concat(endpoint)))
                 .version(HttpClient.Version.HTTP_2)
@@ -31,8 +31,7 @@ public class WebClient {
                 .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)))
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return objectMapper.readValue(response.body(), Object.class);
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     public <T> T get(String endpoint, Class<T> responseType) throws IOException, InterruptedException {
