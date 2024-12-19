@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 
 public class WebClient {
 
@@ -28,6 +29,7 @@ public class WebClient {
                 .uri(URI.create(address.concat(endpoint)))
                 .version(HttpClient.Version.HTTP_2)
                 .header("Content-Type", "application/json")
+                .timeout(Duration.ofSeconds(1))
                 .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)))
                 .build();
 
@@ -39,12 +41,14 @@ public class WebClient {
                 .uri(URI.create(address.concat(endpoint)))
                 .version(HttpClient.Version.HTTP_2)
                 .header("Accept", "application/json")
+                .timeout(Duration.ofSeconds(1))
                 .GET()
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
-            throw new RuntimeException("Falha ao consumir endpoint:" + endpoint + ", status code: " + response.statusCode());
+            throw new RuntimeException(
+                    "Falha ao consumir endpoint:" + endpoint + ", status code: " + response.statusCode());
         }
 
         return objectMapper.readValue(response.body(), responseType);
