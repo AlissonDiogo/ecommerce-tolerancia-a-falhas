@@ -1,4 +1,4 @@
-package br.ufrn.imd.ecommerce.client;
+package br.ufrn.imd.ecommerce.utils.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -9,14 +9,14 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-public class WebClient {
+public class RestClient {
 
     private String address;
 
     private HttpClient httpClient;
     private ObjectMapper objectMapper;
 
-    public WebClient(String address) {
+    public RestClient(String address) {
         this.httpClient = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_2)
                 .build();
