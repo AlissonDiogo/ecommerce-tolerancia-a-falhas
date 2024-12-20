@@ -17,9 +17,9 @@ public class FidelityServiceImpl implements FidelityService {
     }
 
     @Override
-    public int bonus(FidelityRequestDto fidelity) {
+    public int bonus(FidelityRequestDto requestFidelity) {
         try {
-            HttpResponse<String> response = restClient.post("/bonus", fidelity);
+            HttpResponse<String> response = restClient.post("/bonus", requestFidelity);
             return response.statusCode();
         } catch (IOException | InterruptedException e) {
             throw new Fail(FailType.TIME);
