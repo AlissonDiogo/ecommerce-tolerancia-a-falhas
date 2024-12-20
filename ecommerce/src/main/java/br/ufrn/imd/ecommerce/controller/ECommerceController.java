@@ -12,8 +12,12 @@ public class ECommerceController {
     @PostMapping("/buy")
     public String buy(@RequestBody BuyRequestDto buyRequestDto) {
         EcommerceProcessor processor = new EcommerceProcessor();
+        try { 
         BuyResponseDto buyResponseDto = processor.processBuy(buyRequestDto);
-
         return buyResponseDto.toString();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return e.getMessage();
+        }
     }
 }

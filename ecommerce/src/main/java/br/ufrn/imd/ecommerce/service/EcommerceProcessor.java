@@ -38,7 +38,12 @@ public class EcommerceProcessor implements Processor {
             ExchangeResponseDto exchangeResponseDto = this.exchangeService.consultExchange();
             this.exchangeService.updateExchange(exchangeResponseDto.value());
         } catch (Fail f) {
-            logger.error("[EXCHANGE] {} Será usado o valor obtido na última consulta.", f.getMessage());
+            if (requestDto.ft()) {
+                logger.error("[EXCHANGE] {} Será usado o valor obtido na última consulta.", f.getMessage());
+            } else {
+                logger.error("[EXCHANGE] Tolerância a falhas desabilitado.");
+                throw f;
+            }
         }
         logger.info("O valor do câmbio é R$ {}", exchangeService.getLastExchangeValue());
 
