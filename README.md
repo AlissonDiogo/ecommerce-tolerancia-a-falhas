@@ -1,1 +1,1 @@
-# ecommerce-intolerancia-a-falhas
+# ecommerce-tolerancia-a-falhas
