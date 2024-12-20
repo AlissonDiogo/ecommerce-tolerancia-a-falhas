@@ -30,8 +30,19 @@ public class EcommerceProcessor implements Processor {
     @Override
     public BuyResponseDto processBuy(BuyRequestDto requestDto) {
         // REQUEST 01
-        ProductResponseDto productResponseDto = this.storeService.checkProductById(requestDto.productId());
-        System.out.println(productResponseDto.productId());
+        try {
+            ProductResponseDto productResponseDto = this.storeService.checkProductById(requestDto.productId());
+            System.out.println(productResponseDto.productId());
+        } catch (Fail f) {
+            if (requestDto.ft()) {
+                try {
+                    ProductResponseDto productResponseDto = this.storeService.retryCheckProductById(requestDto.productId());
+                    System.out.println(productResponseDto.productId());
+                } catch (Fail f2) {
+                    throw f2;
+                }
+            }
+        }
 
         // REQUEST 02
         try {

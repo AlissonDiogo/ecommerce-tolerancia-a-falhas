@@ -28,6 +28,23 @@ public class StoreServiceImpl implements StoreService {
         }
     }
 
+    public ProductResponseDto retryCheckProductById(String productId) throws Fail {
+        int retryStep = 0;
+        while (retryStep < 3) {
+            try {
+                return checkProductById(productId);
+            } catch (Fail e) {
+                if (e.getFailType() == FailType.OMISSION) {
+                    retryStep++;
+                    System.out.println("Tentando novamente checkProductById: " + retryStep);
+                } else {
+                    throw e;
+                }
+            }
+        } 
+        throw new Fail(FailType.OMISSION);
+    }
+
     @Override
     public UUID sellProduct(SellRequestDto requestDto) throws Fail {
         record SellResponseDto(UUID transactionId){}
