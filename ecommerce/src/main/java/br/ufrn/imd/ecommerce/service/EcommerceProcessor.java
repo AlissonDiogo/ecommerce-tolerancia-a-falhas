@@ -32,15 +32,19 @@ public class EcommerceProcessor implements Processor {
         // REQUEST 01
         try {
             ProductResponseDto productResponseDto = this.storeService.checkProductById(requestDto.productId());
-            System.out.println(productResponseDto.productId());
+            logger.info("[STORE] Endpoint /product efetuado com sucesso o produto de id {}", productResponseDto.productId());
         } catch (Fail f) {
             if (requestDto.ft()) {
                 try {
-                    ProductResponseDto productResponseDto = this.storeService.retryCheckProductById(requestDto.productId());
-                    System.out.println(productResponseDto.productId());
+                    ProductResponseDto productResponseDto = this.storeService
+                            .retryCheckProductById(requestDto.productId());
+                    logger.info("[STORE] Endpoint /product efetuado com sucesso o produto de id {}", productResponseDto.productId());
                 } catch (Fail f2) {
                     throw f2;
                 }
+            } else {
+                logger.error("[STORE] Tolerância a falhas desativado -> endpoint /product");
+                throw f;
             }
         }
 
