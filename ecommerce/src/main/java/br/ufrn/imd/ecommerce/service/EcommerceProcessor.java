@@ -22,15 +22,16 @@ public class EcommerceProcessor implements Processor {
     private final FidelityService fidelityService;
 
     public EcommerceProcessor() {
-        this.storeService = new StoreServiceImpl("http://192.168.1.212:8082");
-        this.exchangeService = new ExchangeImpl("http://192.168.1.212:8083");
-        this.fidelityService = new FidelityServiceImpl("http://192.168.1.212:8084");
+        this.storeService = new StoreServiceImpl("http://192.168.0.10:8082");
+        this.exchangeService = new ExchangeImpl("http://192.168.0.10:8083");
+        this.fidelityService = new FidelityServiceImpl("http://192.168.0.10:8084");
     }
 
     @Override
     public BuyResponseDto processBuy(BuyRequestDto requestDto) {
         // REQUEST 01
-        ProductResponseDto productResponseDto = this.storeService.checkProductById(requestDto.productId());
+        ProductResponseDto productResponseDto =
+                this.storeService.checkProductById(requestDto.productId());
         System.out.println(productResponseDto.productId());
 
         // REQUEST 02
@@ -38,18 +39,24 @@ public class EcommerceProcessor implements Processor {
             ExchangeResponseDto exchangeResponseDto = this.exchangeService.consultExchange();
             this.exchangeService.updateExchange(exchangeResponseDto.value());
         } catch (Fail f) {
-            logger.error("[EXCHANGE] {} Será usado o valor obtido na última consulta.", f.getMessage());
+            logger.error("[EXCHANGE] {} Será usado o valor obtido na última consulta.",
+                    f.getMessage());
         }
         logger.info("O valor do câmbio é R$ {}", exchangeService.getLastExchangeValue());
 
         // REQUEST 03
-        UUID transactionId = this.storeService.sellProduct(new SellRequestDto(requestDto.productId()));
+        UUID transactionId =
+                this.storeService.sellProduct(new SellRequestDto(requestDto.productId()));
         System.out.println(transactionId);
 
         // REQUEST 04
-        FidelityRequestDto fidelityRequestDto = new FidelityRequestDto(requestDto.userId(), 30d);
-        int statusCode = this.fidelityService.bonus(fidelityRequestDto);
-        System.out.println(statusCode);
+        try {
+            FidelityRequestDto fidelityRequestDto = new FidelityRequestDto(requestDto.userId(),
+                    (int) Math.round(productResponseDto.value()));
+            this.fidelityService.bonus(fidelityRequestDto);
+        } catch (Fail f) {
+            logger.error("[FIDELITY] {} \nO processamento ocorrerá mais tarde.", f.getMessage());
+        }
 
         return new BuyResponseDto(HttpStatus.CREATED, transactionId);
     }

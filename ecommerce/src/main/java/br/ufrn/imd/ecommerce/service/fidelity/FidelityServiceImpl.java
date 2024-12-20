@@ -1,6 +1,8 @@
 package br.ufrn.imd.ecommerce.service.fidelity;
 
 import br.ufrn.imd.ecommerce.utils.client.RestClient;
+import br.ufrn.imd.ecommerce.utils.fails.Fail;
+import br.ufrn.imd.ecommerce.utils.fails.FailType;
 import br.ufrn.imd.ecommerce.dto.FidelityRequestDto;
 
 import java.io.IOException;
@@ -16,11 +18,11 @@ public class FidelityServiceImpl implements FidelityService {
 
     @Override
     public int bonus(FidelityRequestDto fidelity) {
-        try{
-            HttpResponse<String> response =  restClient.post("/bonus", fidelity);
+        try {
+            HttpResponse<String> response = restClient.post("/bonus", fidelity);
             return response.statusCode();
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Erro no processamento do bonus: " + e.getMessage());
+            throw new Fail(FailType.TIME);
         }
     }
 }
