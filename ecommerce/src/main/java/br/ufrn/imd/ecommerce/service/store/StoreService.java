@@ -10,6 +10,8 @@ public interface StoreService {
 
     ProductResponseDto checkProductById(String productId) throws Fail;
 
+    ProductResponseDto retryCheckProductById(String productId) throws Fail;
+
     UUID sellProduct(SellRequestDto requestDto) throws Fail;
 
 }

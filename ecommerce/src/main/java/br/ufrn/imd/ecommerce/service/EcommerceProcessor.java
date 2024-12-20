@@ -35,17 +35,41 @@ public class EcommerceProcessor implements Processor {
     @Override
     public BuyResponseDto processBuy(BuyRequestDto requestDto) {
         // REQUEST 01
-        ProductResponseDto productResponseDto =
-                this.storeService.checkProductById(requestDto.productId());
-        System.out.println(productResponseDto.productId());
+        Double productValue = 0.0d;
+        try {
+            ProductResponseDto productResponseDto =
+                    this.storeService.checkProductById(requestDto.productId());
+            productValue = productResponseDto.value();
+            logger.info("[STORE] Endpoint /product efetuado com sucesso o produto de id {}",
+                    productResponseDto.productId());
+        } catch (Fail f) {
+            if (requestDto.ft()) {
+                try {
+                    ProductResponseDto productResponseDto =
+                            this.storeService.retryCheckProductById(requestDto.productId());
+                    logger.info("[STORE] Endpoint /product efetuado com sucesso o produto de id {}",
+                            productResponseDto.productId());
+                } catch (Fail f2) {
+                    throw f2;
+                }
+            } else {
+                logger.error("[STORE] Tolerância a falhas desativado -> endpoint /product");
+                throw f;
+            }
+        }
 
         // REQUEST 02
         try {
             ExchangeResponseDto exchangeResponseDto = this.exchangeService.consultExchange();
             this.exchangeService.updateExchange(exchangeResponseDto.value());
         } catch (Fail f) {
-            logger.error("[EXCHANGE] {} Será usado o valor obtido na última consulta.",
-                    f.getMessage());
+            if (requestDto.ft()) {
+                logger.error("[EXCHANGE] {} Será usado o valor obtido na última consulta.",
+                        f.getMessage());
+            } else {
+                logger.error("[EXCHANGE] Tolerância a falhas desabilitado.");
+                throw f;
+            }
         }
         logger.info("O valor do câmbio é R$ {}", exchangeService.getLastExchangeValue());
 
@@ -55,13 +79,18 @@ public class EcommerceProcessor implements Processor {
         System.out.println(transactionId);
 
         // REQUEST 04
-        FidelityRequestDto fidelityRequestDto = new FidelityRequestDto(requestDto.userId(),
-                (int) Math.round(productResponseDto.value()));
+        FidelityRequestDto fidelityRequestDto =
+                new FidelityRequestDto(requestDto.userId(), (int) Math.round(productValue));
         try {
             this.fidelityService.bonus(fidelityRequestDto);
         } catch (Fail f) {
-            logger.error("[FIDELITY] {} O processamento ocorrera mais tarde.", f.getMessage());
-            this.processBonus.addBonusToProcessLater(fidelityRequestDto);
+            if (requestDto.ft()) {
+                logger.error("[FIDELITY] {} O processamento ocorrera mais tarde.", f.getMessage());
+                this.processBonus.addBonusToProcessLater(fidelityRequestDto);
+            } else {
+                logger.error("[EXCHANGE] Tolerância a falhas desabilitado.");
+                throw f;
+            }
         }
 
         return new BuyResponseDto(HttpStatus.CREATED, transactionId);
