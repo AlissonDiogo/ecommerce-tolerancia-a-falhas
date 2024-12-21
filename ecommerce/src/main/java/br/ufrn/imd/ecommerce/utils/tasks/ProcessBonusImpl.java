@@ -27,15 +27,16 @@ public class ProcessBonusImpl implements ProcessBonus {
 
     @Scheduled(fixedRate = 30000)
     public void retryProcessBonus() {
-        logger.info("Iniciando processamento de bonus");
         while (!this.bonusProcessingQueue.isEmpty()) {
-            FidelityRequestDto requestFidelity = this.bonusProcessingQueue.poll();
+            FidelityRequestDto requestFidelity = this.bonusProcessingQueue.peek();
+            String idUser = requestFidelity.idUser();
+            logger.info("Iniciando processamento do bonus do usuario {}", idUser);
             try {
                 this.fidelityService.bonus(requestFidelity);
-                logger.info("Bonus do usuario {} processado", requestFidelity.idUser());
+                logger.info("Bonus do usuario {} processado", idUser);
+                this.bonusProcessingQueue.poll();
             } catch (Fail f) {
-                logger.error("Falha ao processar bonus do usuario {}", requestFidelity.idUser());
-                this.addBonusToProcessLater(requestFidelity);
+                logger.error("Falha ao processar bonus do usuario {}", idUser);
                 break;
             }
         }
