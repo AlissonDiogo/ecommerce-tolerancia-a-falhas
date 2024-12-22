@@ -37,16 +37,16 @@ public class EcommerceProcessor implements Processor {
         // REQUEST 01
         Double productValue = 0.0d;
         try {
-            ProductResponseDto productResponseDto =
-                    this.storeService.checkProductById(requestDto.productId());
+            ProductResponseDto productResponseDto = this.storeService.checkProductById(requestDto.productId());
             productValue = productResponseDto.value();
             logger.info("[STORE] Endpoint /product efetuado com sucesso o produto de id {}",
                     productResponseDto.productId());
         } catch (Fail f) {
             if (requestDto.ft()) {
                 try {
-                    ProductResponseDto productResponseDto =
-                            this.storeService.retryCheckProductById(requestDto.productId());
+                    ProductResponseDto productResponseDto = this.storeService
+                            .retryCheckProductById(requestDto.productId());
+                    productValue = productResponseDto.value();
                     logger.info("[STORE] Endpoint /product efetuado com sucesso o produto de id {}",
                             productResponseDto.productId());
                 } catch (Fail f2) {
@@ -74,13 +74,12 @@ public class EcommerceProcessor implements Processor {
         logger.info("O valor do câmbio é R$ {}", exchangeService.getLastExchangeValue());
 
         // REQUEST 03
-        UUID transactionId =
-                this.storeService.sellProduct(new SellRequestDto(requestDto.productId()));
+        UUID transactionId = this.storeService.sellProduct(new SellRequestDto(requestDto.productId()));
         System.out.println(transactionId);
 
         // REQUEST 04
-        FidelityRequestDto fidelityRequestDto =
-                new FidelityRequestDto(requestDto.userId(), (int) Math.round(productValue));
+        FidelityRequestDto fidelityRequestDto = new FidelityRequestDto(requestDto.userId(),
+                (int) Math.round(productValue));
         try {
             this.fidelityService.bonus(fidelityRequestDto);
         } catch (Fail f) {
