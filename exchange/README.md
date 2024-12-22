@@ -9,7 +9,7 @@ Este projeto representa o serviço exchange, que provê uma API para retornar a 
 - Ter o repositório clonado. Caso não tenha, clone com: 
 
 ```shell 
-git clone https://github.com/AlissonDiogo/ecommerce-intolerancia-a-falhas.git
+git clone https://github.com/AlissonDiogo/ecommerce-tolerancia-a-falhas.git
 ```
 
 
@@ -35,7 +35,7 @@ PORT=8083 EXCHANGE_KEY="your_api_key" go run main.go
 ### Pré-requisitos (com docker) <hr/>
 - Ter o repositório clonado. Caso não tenha, clone com: 
 ```shell 
-git clone https://github.com/AlissonDiogo/ecommerce-intolerancia-a-falhas.git
+git clone https://github.com/AlissonDiogo/ecommerce-tolerancia-a-falhas.git
 ```
 - Ter o docker instalado
 - Iniciar o docker swarm, caso não tenha iniciado.
