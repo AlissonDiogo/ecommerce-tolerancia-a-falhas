@@ -5,6 +5,6 @@ import br.ufrn.imd.ecommerce.dto.BuyResponseDto;
 
 public interface Processor {
 
-    BuyResponseDto processBuy(BuyRequestDto requestDto);
+    BuyResponseDto processBuy(BuyRequestDto requestDto) throws RuntimeException;
 
 }
