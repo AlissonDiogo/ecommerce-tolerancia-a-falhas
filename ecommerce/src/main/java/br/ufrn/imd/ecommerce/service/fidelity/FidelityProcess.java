@@ -6,6 +6,7 @@ import br.ufrn.imd.ecommerce.utils.fails.Fail;
 import br.ufrn.imd.ecommerce.utils.fails.FailType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
@@ -31,6 +32,7 @@ public class FidelityProcess implements FidelityService, FidelityFaultToleranceS
     }
 
     @Override
+    @Scheduled(fixedRate = 30000)
     public void retryProcessBonus() {
         logger.info("Iniciando processamento de bonus");
         while (!bonusProcessingQueue.isEmpty()) {
@@ -40,8 +42,6 @@ public class FidelityProcess implements FidelityService, FidelityFaultToleranceS
                 logger.info("Bonus do usuario {} processado!", requestFidelity.idUser());
             } catch (Fail f) {
                 logger.error("Falha ao processar bonus do usuario {}.", requestFidelity.idUser());
-                addBonusToProcessLater(requestFidelity);
-
                 break;
             }
         }
