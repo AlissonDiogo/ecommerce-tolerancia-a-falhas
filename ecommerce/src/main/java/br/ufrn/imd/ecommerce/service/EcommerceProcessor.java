@@ -52,7 +52,7 @@ public class EcommerceProcessor implements Processor {
             this.exchangeProcess.updateExchange(exchangeResponseDto.value());
         } catch (Fail f) {
             if (requestDto.ft()) {
-                logger.info("[EXCHANGE] Será usado o valor obtido na última consulta. Cujo valor é R$ {}", this.exchangeProcess.getLastExchangeValue());
+                logger.info("[EXCHANGE] Será usado o valor obtido na última consulta. Cujo valor é {}", this.exchangeProcess.getLastExchangeValue());
             } else {
                 throw new RuntimeException("[EXCHANGE] Tolerância a falhas desativada: "+f.getMessage());
             }
@@ -79,7 +79,7 @@ public class EcommerceProcessor implements Processor {
             logger.info("O status code da requisição foi {}.", statusCode);
         } catch (Fail f) {
             if (requestDto.ft()) {
-                logger.info("[FIDELITY] A aplicação do bonus falhou pelo seguinte motivo {}. O processamento ocorrerá mais tarde.", f.getMessage());
+                logger.info("[FIDELITY] {}. O processamento ocorrerá mais tarde.", f.getMessage());
                 this.fidelityProcess.addBonusToProcessLater(fidelityRequestDto);
             } else {
                 throw new RuntimeException("[FIDELITY] Tolerância a falhas desativada: {}"+f.getMessage());
