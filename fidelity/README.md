@@ -11,13 +11,13 @@ Serviço que salva um bônus para o usuário após a compra desenvolvido utiliza
 Clone o repositório. Caso não tenha, execute no terminal:
 
 ```bash
-$ git clone https://github.com/AlissonDiogo/ecommerce-tolerancia-a-falhas.git
+git clone https://github.com/AlissonDiogo/ecommerce-tolerancia-a-falhas.git
 ```
 
 Se estiver na raiz do repositório, acesse a pasta do serviço no terminal/cmd:
 
 ```bash
-$ cd fidelity
+cd fidelity
 ```
 
 ### Sem Docker
@@ -28,13 +28,13 @@ Para executar o projeto sem o Docker, siga os seguintes passos:
 2. Instale as dependências
 
 ```bash
-$ npm ci
+npm ci
 ```
 
 3. Execute a aplicação
 
 ```bash
-$ npm start
+npm start
 ```
 
 ### Com Docker
@@ -43,5 +43,5 @@ $ npm start
 2. No terminal execute:
 
 ```bash
-$ docker compose up -d
+docker compose up -d
 ```
