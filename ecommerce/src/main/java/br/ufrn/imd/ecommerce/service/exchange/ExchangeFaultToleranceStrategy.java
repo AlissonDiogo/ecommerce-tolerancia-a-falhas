@@ -1,6 +1,6 @@
 package br.ufrn.imd.ecommerce.service.exchange;
 
-public interface ExchangeFailureStrategy {
+public interface ExchangeFaultToleranceStrategy {
 
     Double getLastExchangeValue();
 

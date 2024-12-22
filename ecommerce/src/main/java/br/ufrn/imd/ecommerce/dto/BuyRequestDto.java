@@ -1,4 +1,6 @@
 package br.ufrn.imd.ecommerce.dto;
 
-public record BuyRequestDto(String productId, String userId, Boolean ft) {
+import java.util.UUID;
+
+public record BuyRequestDto(UUID productId, String userId, Boolean ft) {
 }

@@ -1,4 +1,6 @@
 package br.ufrn.imd.store.dto;
 
-public record SellRequestDto(String productId) {
+import java.util.UUID;
+
+public record SellRequestDto(UUID productId) {
 }

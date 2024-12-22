@@ -7,12 +7,12 @@ import br.ufrn.imd.ecommerce.utils.fails.Fail;
 
 import java.io.IOException;
 
-public class ExchangeImpl implements ExchangeService, ExchangeFailureStrategy {
+public class ExchangeProcess implements ExchangeService, ExchangeFaultToleranceStrategy {
 
     private final RestClient restClient;
     private Double exchangeValue;
 
-    public ExchangeImpl(String address) {
+    public ExchangeProcess(String address) {
         this.restClient = new RestClient(address);
         this.exchangeValue = 0d;
     }
