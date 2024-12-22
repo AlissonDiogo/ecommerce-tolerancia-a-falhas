@@ -4,6 +4,6 @@ import br.ufrn.imd.ecommerce.dto.FidelityRequestDto;
 
 public interface FidelityService {
 
-    int bonus(FidelityRequestDto requestDto);
+    int addBonus(FidelityRequestDto requestDto);
 
 }
