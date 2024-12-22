@@ -6,10 +6,10 @@ import br.ufrn.imd.ecommerce.utils.fails.Fail;
 
 import java.util.UUID;
 
-public interface StoreService {
+public interface StoreFaultToleranceStrategy {
 
-    Product checkProductById(UUID productId) throws Fail;
+    Product retryCheckProductById(UUID productId) throws Fail;
 
-    UUID sellProduct(SellRequestDto requestDto) throws Fail;
+    UUID retrySellProduct(SellRequestDto requestDto);
 
 }
