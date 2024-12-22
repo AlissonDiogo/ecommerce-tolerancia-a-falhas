@@ -29,10 +29,24 @@ Projeto desenvolvido para a disciplina de Tópicos Especiais em Engenharia de So
 
 ## 🚀 Como executar o projeto
 
-Clone este repositório
+Clone este repositório:
 
 ```bash
 git clone https://github.com/AlissonDiogo/ecommerce-tolerancia-a-falhas.git
+```
+
+Acesse a pasta Ecommerce e edite o arquivo `src/main/java/br/ufrn/imd/ecommerce/service/EcommerceProcessor.java` adicionando o IP da sua máquina nas linhas 29-31:
+
+```java
+this.storeProcess = new StoreProcess("http://{IP}:8082");
+this.exchangeProcess = new ExchangeProcess("http://{IP}:8083");
+this.fidelityProcess = new FidelityProcess("http://{IP}:8084");
+```
+
+Edite o arquivo e adicione o IP da sua máquina na linha 25 do arquivo `src/main/java/br/ufrn/imd/ecommerce/utils/tasks/ProcessBonusImpl.java`:
+
+```java
+this.fidelityService = new FidelityProcess("http://{IP}:8084");
 ```
 
 ### Executar todos (Com Docker)
