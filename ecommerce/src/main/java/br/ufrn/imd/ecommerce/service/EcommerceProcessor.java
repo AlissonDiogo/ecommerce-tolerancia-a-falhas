@@ -7,6 +7,7 @@ import br.ufrn.imd.ecommerce.service.fidelity.FidelityProcess;
 import br.ufrn.imd.ecommerce.service.store.StoreProcess;
 import br.ufrn.imd.ecommerce.service.store.async.AsyncStoreProcessor;
 import br.ufrn.imd.ecommerce.utils.fails.Fail;
+import br.ufrn.imd.ecommerce.utils.tasks.ProcessBonus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,13 +23,15 @@ public class EcommerceProcessor implements Processor {
     private final FidelityProcess fidelityProcess;
 
     private final AsyncStoreProcessor asyncStoreProcessor;
+    private final ProcessBonus processBonus;
 
-    public EcommerceProcessor() {
+    public EcommerceProcessor(ProcessBonus processBonus) {
         this.storeProcess = new StoreProcess("http://192.168.0.101:8082");
         this.exchangeProcess = new ExchangeProcess("http://192.168.0.101:8083");
         this.fidelityProcess = new FidelityProcess("http://192.168.0.101:8084");
 
         this.asyncStoreProcessor = new AsyncStoreProcessor(storeProcess);
+        this.processBonus = processBonus;
     }
 
     @Override
@@ -81,7 +84,7 @@ public class EcommerceProcessor implements Processor {
         } catch (Fail f) {
             if (requestDto.ft()) {
                 logger.info("[FIDELITY] {}. O processamento ocorrerá mais tarde.", f.getMessage());
-                this.fidelityProcess.addBonusToProcessLater(fidelityRequestDto);
+                this.processBonus.addBonusToProcessLater(fidelityRequestDto);
             } else {
                 throw new RuntimeException("[FIDELITY] Tolerância a falhas desativada: {}"+f.getMessage());
             }
