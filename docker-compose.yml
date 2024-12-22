@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  ecommerce:
+    image: ecommerce-app 
+    ports:
+      - "8081:8081"
+      
+  store:
+    image: store-app 
+    ports:
+      - "8082:8082"
+
+  exchange:
+    image: exchange-app 
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 60s
+    ports:
+      - "8083:8083"
+
+  fidelity:
+    image: fidelity-app
+    ports:
+      - "8084:8084"

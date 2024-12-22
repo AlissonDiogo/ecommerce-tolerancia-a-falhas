@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  ecommerce:
+    image: ecommerce-app:latest
+    build:
+      context: ./ecommerce
+      dockerfile: Dockerfile
+  store:
+    image: store-app:latest
+    build:
+      context: ./store
+      dockerfile: Dockerfile
+  exchange:
+    build:
+      context: ./exchange
+      dockerfile: Dockerfile
+    image: exchange-app:latest
+  fidelity:
+    build:
+      context: ./fidelity
+      dockerfile: Dockerfile
+    image: fidelity-app:latest

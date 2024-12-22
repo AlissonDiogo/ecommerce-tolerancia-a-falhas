@@ -35,6 +35,33 @@ Clone este repositório
 $ git clone https://github.com/AlissonDiogo/ecommerce-tolerancia-a-falhas.git
 ```
 
+### Executar todos (Com Docker) 
+
+Inicie o swarm
+
+```bash
+$ docker swarm init
+```
+
+Rode o arquivo docker-compose.build.yml para buildar a imagem de todos os projetos
+
+```bash
+$ docker compose -f docker-compose.build.yml build
+```
+
+Faça o deploy do docker-compose.yml para executar todos os serviços de uma vez
+
+```bash
+$ docker stack deploy -c docker-compose.yml ecommerce_project
+```
+
+Para remover todos os serviços da stack de uma vez
+
+```bash
+$ docker stack rm ecommerce_project
+```
+
+### Executar individualmente (Com ou sem Docker)
 Para executar os serviços:
 
 1. [Ecommerce](ecommerce/README.md)
