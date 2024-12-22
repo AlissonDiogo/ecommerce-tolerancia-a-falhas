@@ -2,6 +2,7 @@ package br.ufrn.imd.ecommerce.service.store.async;
 
 import br.ufrn.imd.ecommerce.dto.SellRequestDto;
 import br.ufrn.imd.ecommerce.service.store.StoreProcess;
+import br.ufrn.imd.ecommerce.utils.fails.Fail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +29,7 @@ public class AsyncStoreProcessor implements Runnable {
         try {
             taskQueue.put(sellRequestDto); // Adiciona a tarefa à fila
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.error("Erro ao enfileirar tarefa: {}", e.getMessage());
+            logger.error("Erro ao tentar enfileirar tarefa: {}", e.getMessage());
         }
     }
 
@@ -43,8 +43,8 @@ public class AsyncStoreProcessor implements Runnable {
             }else{
                 enqueueSellTask(sellRequestDto);
             }
-        } catch (Exception e) {
-            logger.error("Erro ao processar a tarefa para o produto ID {}: {}", sellRequestDto.productId(), e.getMessage());
+        } catch (Fail f) {
+            logger.error("Erro ao processar a tarefa para o produto ID {}: {}", sellRequestDto.productId(), f.getMessage());
         }
     }
 
@@ -52,7 +52,7 @@ public class AsyncStoreProcessor implements Runnable {
     public void run() {
         while (true) {
             try {
-                SellRequestDto sellRequestDto = taskQueue.take(); // bloqueante
+                SellRequestDto sellRequestDto = taskQueue.take();
                 processSellTask(sellRequestDto);
 
                sleep(1000);

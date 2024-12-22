@@ -38,7 +38,7 @@ public class StoreProcess implements StoreService, StoreFaultToleranceStrategy {
 
     @Override
     public UUID sellProduct(SellRequestDto requestDto) throws Fail {
-        logger.info("[STORE] Processando compra de produto com id: {}", requestDto.productId());
+        logger.info("[STORE] Processando a venda do produto de id: {}", requestDto.productId());
 
         try{
             HttpResponse<String> response = restClient.post("/store/sell", requestDto);
@@ -77,13 +77,13 @@ public class StoreProcess implements StoreService, StoreFaultToleranceStrategy {
                 Thread.sleep(500);
                 return sellProduct(requestDto);
             }catch (Fail f) {
-                logger.warn("[STORE] Erro no retry {} do processo de compra do produto com id: {} ", attempt, requestDto.productId());
+                logger.warn("[STORE] Erro no retry {} do processo de venda do produto com id: {} ", attempt, requestDto.productId());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        logger.error("[STORE] Não foi possível finalizae a compra mesmo após as 3 tentativas.");
+        logger.error("[STORE] Não foi possível finalizar a venda mesmo após as 3 tentativas.");
         return null;
     }
 

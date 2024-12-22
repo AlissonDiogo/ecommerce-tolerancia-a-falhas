@@ -4,6 +4,8 @@ import br.ufrn.imd.store.model.Product;
 import br.ufrn.imd.store.dto.SellRequestDto;
 import br.ufrn.imd.store.dto.SellResponseDto;
 import br.ufrn.imd.store.failure.HandleFailure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/store")
 public class StoreController {
+
+    private final Logger logger = LoggerFactory.getLogger(StoreController.class);
 
     @Autowired
     private final HandleFailure handleFailure;
@@ -55,9 +59,10 @@ public class StoreController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        System.out.println(sellRequestDto);
-
         SellResponseDto sell = new SellResponseDto(UUID.randomUUID());
+
+        logger.info("Para a venda do produto de id {}, o identificador da transação é {}.", sellRequestDto.productId(), sell.transactionId());
+
         return new ResponseEntity<>(sell, HttpStatus.OK);
     }
 

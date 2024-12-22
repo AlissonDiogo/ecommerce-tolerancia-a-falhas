@@ -63,6 +63,7 @@ public class EcommerceProcessor implements Processor {
         SellRequestDto sellRequestDto = new SellRequestDto(requestDto.productId());
         try{
             transactionId = this.storeProcess.sellProduct(sellRequestDto);
+            logger.info("[STORE] Venda processada com id de transação {}.", transactionId);
         }catch (Fail f){
             if (requestDto.ft()) {
                 asyncStoreProcessor.enqueueSellTask(sellRequestDto);
