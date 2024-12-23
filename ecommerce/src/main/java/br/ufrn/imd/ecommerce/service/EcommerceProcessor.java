@@ -26,9 +26,9 @@ public class EcommerceProcessor implements Processor {
     private final ProcessBonus processBonus;
 
     public EcommerceProcessor(ProcessBonus processBonus) {
-        this.storeProcess = new StoreProcess("http://192.168.0.101:8082");
-        this.exchangeProcess = new ExchangeProcess("http://192.168.0.101:8083");
-        this.fidelityProcess = new FidelityProcess("http://192.168.0.101:8084");
+        this.storeProcess = new StoreProcess("http://172.26.16.1:8082");
+        this.exchangeProcess = new ExchangeProcess("http://172.26.16.1:8083");
+        this.fidelityProcess = new FidelityProcess("http://172.26.16.1:8084");
 
         this.asyncStoreProcessor = new AsyncStoreProcessor(storeProcess);
         this.processBonus = processBonus;
@@ -45,39 +45,41 @@ public class EcommerceProcessor implements Processor {
                 product = this.storeProcess.retryCheckProductById(requestDto.productId());
                 logger.info("[STORE] Endpoint /product efetuado com sucesso o produto de id {}", product.id());
             } else {
-                throw new RuntimeException("[STORE] Tolerância a falhas desativada: "+f.getMessage());
+                throw new RuntimeException("[STORE] Tolerância a falhas desativada: " + f.getMessage());
             }
         }
 
         // REQUEST 02
         try {
             ExchangeResponseDto exchangeResponseDto = this.exchangeProcess.consultExchange();
-            this.exchangeProcess.updateExchange(exchangeResponseDto.value());
+            // this.exchangeProcess.updateExchange(exchangeResponseDto.value());
+            ExchangeProcess.lastExchangeValue = exchangeResponseDto.value();
         } catch (Fail f) {
             if (requestDto.ft()) {
-                logger.info("[EXCHANGE] Será usado o valor obtido na última consulta. Cujo valor é {}", this.exchangeProcess.getLastExchangeValue());
+                logger.info("[EXCHANGE] Será usado o valor obtido na última consulta. Cujo valor é {}",
+                ExchangeProcess.lastExchangeValue);
             } else {
-                throw new RuntimeException("[EXCHANGE] Tolerância a falhas desativada: "+f.getMessage());
+                throw new RuntimeException("[EXCHANGE] Tolerância a falhas desativada: " + f.getMessage());
             }
         }
 
         // REQUEST 03
         UUID transactionId = null;
         SellRequestDto sellRequestDto = new SellRequestDto(requestDto.productId());
-        try{
+        try {
             transactionId = this.storeProcess.sellProduct(sellRequestDto);
             logger.info("[STORE] Venda processada com id de transação {}.", transactionId);
-        }catch (Fail f){
+        } catch (Fail f) {
             if (requestDto.ft()) {
                 asyncStoreProcessor.enqueueSellTask(sellRequestDto);
             } else {
-                throw new RuntimeException("[STORE] Tolerância a falhas desativada: "+f.getMessage());
+                throw new RuntimeException("[STORE] Tolerância a falhas desativada: " + f.getMessage());
             }
         }
 
-
         // REQUEST 04
-        FidelityRequestDto fidelityRequestDto = new FidelityRequestDto(requestDto.userId(), (int) Math.round(product.value()));
+        FidelityRequestDto fidelityRequestDto = new FidelityRequestDto(requestDto.userId(),
+                (int) Math.round(product.value()));
         try {
             int statusCode = this.fidelityProcess.addBonus(fidelityRequestDto);
             logger.info("O status code da requisição foi {}.", statusCode);
@@ -86,7 +88,7 @@ public class EcommerceProcessor implements Processor {
                 logger.info("[FIDELITY] {}. O processamento ocorrerá mais tarde.", f.getMessage());
                 this.processBonus.addBonusToProcessLater(fidelityRequestDto);
             } else {
-                throw new RuntimeException("[FIDELITY] Tolerância a falhas desativada: {}"+f.getMessage());
+                throw new RuntimeException("[FIDELITY] Tolerância a falhas desativada: {}" + f.getMessage());
             }
         }
 

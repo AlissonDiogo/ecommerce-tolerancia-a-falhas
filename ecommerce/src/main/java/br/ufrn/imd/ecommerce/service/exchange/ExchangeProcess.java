@@ -11,6 +11,7 @@ public class ExchangeProcess implements ExchangeService, ExchangeFaultToleranceS
 
     private final RestClient restClient;
     private Double exchangeValue;
+    static public Double lastExchangeValue;
 
     public ExchangeProcess(String address) {
         this.restClient = new RestClient(address);
